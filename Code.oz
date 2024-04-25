@@ -58,13 +58,75 @@ in
       %            )
       fun {Next Spaceship Instruction}
          case Instruction of forward then
-            {MoveForward Spaceship}
-         [] turn(left) then
-            {TurnLeft Spaceship}
-         [] turn(right) then
-            {TurnRight Spaceship}
+            {TurnDir Spaceship forward}
+         [] turn(Dir) then
+            {TurnDir Spaceship Dir}
          end
       end
+
+      fun {FollowDirOf P}
+         % Returns the next position in P's direction
+         % Args : P ::= pos(x:X y:Y to:north|east|south|west)
+         % Returns : Q ::= pos(x:X +- 1 y:Y +-1 to:P.to)
+         % OK
+         local CurrDir NextX NextY in
+            CurrDir = P.to
+            case CurrDir of east then
+               NextX = P.x + 1
+               NextY = P.y
+            [] west then
+               NextX = P.x - 1
+               NextY = P.y
+            [] south then
+               NextX = P.x
+               NextY = P.y + 1
+            [] north then
+               NextX = P.x
+               NextY = P.y - 1
+            end
+            %% TODO
+            %% Check if new position is viable (i.e. out of bonds)
+            {AdjoinAt {AdjoinAt P x NextX} y NextY}
+         end
+      end
+
+      fun {RotatePos P Dir}
+         % Rotates P in the given direction Dir
+         case Dir of right then
+            case P.to of east then
+               {AdjoinAt P to south}
+            [] south then
+               {AdjoinAt P to west}
+            [] west then
+               {AdjoinAt P to north}
+            [] north then
+               {AdjoinAt P to east}
+            end
+         [] left then
+            case P.to of east then
+               {AdjoinAt P to north}
+            [] south then
+               {AdjoinAt P to east}
+            [] west then
+               {AdjoinAt P to south}
+            [] north then
+               {AdjoinAt P to west}
+            end
+         [] forward then
+            P
+         end
+      end
+
+      fun {TurnDir Spaceship Dir}
+         % Moves Spaceship according to the direction Dir ::= forward|turn(left)|turn(right)
+         local NewHead Front in 
+            NewHead = {FollowDirOf {RotatePos Spaceship.positions.1 Dir}}
+            Front = {List.take Spaceship.positions {Length Spaceship.positions}-1}
+            {AdjoinAt Spaceship positions NewHead|Front}
+         end
+      end
+
+            
 
       
       % La fonction qui décode la stratégie d'un serpent en une liste de fonctions. Chacune correspond
