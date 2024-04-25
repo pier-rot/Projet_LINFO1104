@@ -3,7 +3,7 @@ local
    % Please replace this path with your own working directory that contains LethOzLib.ozf
 
    % Dossier = {Property.condGet cwdir '/home/max/FSAB1402/Projet-2017'} % Unix example
-   Dossier = {Property.condGet cwdir '/home/pierre/dev/oz/PROJET_LINFO1104'}
+   Dossier = {Property.condGet cwdir '/home/dev/oz/LINFO1104/PROJET_LINFO1104'}
    % Dossier = {Property.condGet cwdir 'C:\\Users\Thomas\Documents\UCL\Oz\Projet'} % Windows example.
    LethOzLib
 
@@ -33,7 +33,12 @@ in
    local
       % Déclarez vos functions ici
       % Declare your functions here
-      X
+      MoveForward
+      TurnDir
+      TurnLeft
+      TurnRight
+      EffectsAt
+      FollowDirOf
    in
       % La fonction qui renvoit les nouveaux attributs du serpent après prise
       % en compte des effets qui l'affectent et de son instruction
@@ -52,9 +57,105 @@ in
       %               effects: [scrap|revert|wormhole(x:<P> y:<P>)|... ...]
       %            )
       fun {Next Spaceship Instruction}
-         {Browse Instruction}
-         Spaceship
+         local NewSpaceship in
+
+            case Instruction of forward then
+               NewSpaceship = {MoveForward Spaceship}
+            [] turn(left) then
+               NewSpaceship = {TurnLeft Spaceship}
+            [] turn(right) then
+               NewSpaceship = {TurnRight Spaceship}
+            end
+            NewSpaceship
+         end
       end
+
+      fun {MoveForward Spaceship}
+         local NewPositions NewEffects in
+            NewPositions = nil
+            NewEffects = nil
+            for P in Spaceship.positions do
+               local Q E in
+                  Q = {FollowDirOf P}
+                  NewPositions = {Append NewPositions Q}
+                  E = {EffectsAt Q}
+                  if E \= nil then
+                     NewEffects = {Append NewEffects E}
+                  end
+               end
+            end
+            {AdjoinAt {AdjoinAt Spaceship effects NewEffects} positions NewPositions}
+         end
+      end
+
+      fun {FollowDirOf P}
+         local CurrDir NextP NextX NextY in
+            CurrDir = P.to
+            case CurrDir of east then
+               NextX = P.x + 1
+               NextY = P.y
+            [] west then
+               NextX = P.x - 1
+               NextY = P.y
+            [] south then
+               NextX = P.x
+               NextY = P.y + 1
+            [] north then
+               NextX = P.x
+               NextY = P.y - 1
+            end
+            %% TODO
+            %% Check if new position is viable (i.e. out of bonds)
+            {AdjoinAt {AdjoinAt P x NextX} y NextY}
+         end
+      end
+
+      fun {EffectsAt P}
+         %% TODO
+         {Browse P}
+      end
+
+      fun {TurnLeft Spaceship}
+         {TurnDir Spaceship left}
+      end
+
+      fun {TurnRight Spaceship}
+         {TurnDir Space right}
+      end
+
+      fun {TurnDir Spaceship Dir}
+         case Spaceship.positions of H|T then
+            local NewHead in
+               case Dir of right then
+                  case H.to of north then
+                     NewHead = {AdjoinAt H to east}
+                  [] east then
+                     NewHead = {AdjoinAt H to south}
+                  [] south then
+                     NewHead = {AdjoinAt H to west}
+                  [] west then
+                     NewHead = {AdjoinAt H to north}
+                  end
+               [] left then
+                  case H.to of north then
+                     NewHead = {AdjoinAt H to west}
+                  [] east then
+                     NewHead = {AdjoinAt H to north}
+                  [] south then
+                     NewHead = {AdjoinAt H to east}
+                  [] west then
+                     NewHead = {AdjoinAt H to south}
+                  end
+               end
+               local NewShip in
+                  NewShip = {AdjoinAt Spaceship positions {Append NewHead|nil T}}
+                  {MoveForward NewShip}
+               end
+            end
+         end
+      end
+
+            
 
       
       % La fonction qui décode la stratégie d'un serpent en une liste de fonctions. Chacune correspond
