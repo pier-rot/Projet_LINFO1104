@@ -89,7 +89,7 @@ in
       end
 
       fun {FollowDirOf P}
-         local CurrDir NextP NextX NextY in
+         local CurrDir NextX NextY in
             CurrDir = P.to
             case CurrDir of east then
                NextX = P.x + 1
