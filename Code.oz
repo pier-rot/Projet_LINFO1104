@@ -91,6 +91,7 @@ in
       fun {FollowDirOf P}
          % Args : P ::= pos(x:X y:Y to:north|east|south|west)
          % Returns : Q ::= pos(x:X +- 1 y:Y +-1 to:P.to)
+         % OK
          local CurrDir NextX NextY in
             CurrDir = P.to
             case CurrDir of east then
