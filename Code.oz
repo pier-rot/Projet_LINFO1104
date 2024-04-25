@@ -57,108 +57,14 @@ in
       %               effects: [scrap|revert|wormhole(x:<P> y:<P>)|... ...]
       %            )
       fun {Next Spaceship Instruction}
-         local NewSpaceship in
-
-            case Instruction of forward then
-               NewSpaceship = {MoveForward Spaceship}
-            [] turn(left) then
-               NewSpaceship = {TurnLeft Spaceship}
-            [] turn(right) then
-               NewSpaceship = {TurnRight Spaceship}
-            end
-            NewSpaceship
+         case Instruction of forward then
+            {MoveForward Spaceship}
+         [] turn(left) then
+            {TurnLeft Spaceship}
+         [] turn(right) then
+            {TurnRight Spaceship}
          end
       end
-
-      fun {MoveForward Spaceship}
-         local NewPositions NewEffects in
-            NewPositions = nil
-            NewEffects = nil
-            for P in Spaceship.positions do
-               local Q E in
-                  Q = {FollowDirOf P}
-                  NewPositions = {Append NewPositions Q}
-                  E = {EffectsAt Q}
-                  if E \= nil then
-                     NewEffects = {Append NewEffects E}
-                  end
-               end
-            end
-            {AdjoinAt {AdjoinAt Spaceship effects NewEffects} positions NewPositions}
-         end
-      end
-
-      fun {FollowDirOf P}
-         % Args : P ::= pos(x:X y:Y to:north|east|south|west)
-         % Returns : Q ::= pos(x:X +- 1 y:Y +-1 to:P.to)
-         % OK
-         local CurrDir NextX NextY in
-            CurrDir = P.to
-            case CurrDir of east then
-               NextX = P.x + 1
-               NextY = P.y
-            [] west then
-               NextX = P.x - 1
-               NextY = P.y
-            [] south then
-               NextX = P.x
-               NextY = P.y + 1
-            [] north then
-               NextX = P.x
-               NextY = P.y - 1
-            end
-            %% TODO
-            %% Check if new position is viable (i.e. out of bonds)
-            {AdjoinAt {AdjoinAt P x NextX} y NextY}
-         end
-      end
-
-      fun {EffectsAt P}
-         %% TODO
-         P
-      end
-
-      fun {TurnLeft Spaceship}
-         {TurnDir Spaceship left}
-      end
-
-      fun {TurnRight Spaceship}
-         {TurnDir Space right}
-      end
-
-      fun {TurnDir Spaceship Dir}
-         case Spaceship.positions of H|T then
-            local NewHead in
-               case Dir of right then
-                  case H.to of north then
-                     NewHead = {AdjoinAt H to east}
-                  [] east then
-                     NewHead = {AdjoinAt H to south}
-                  [] south then
-                     NewHead = {AdjoinAt H to west}
-                  [] west then
-                     NewHead = {AdjoinAt H to north}
-                  end
-               [] left then
-                  case H.to of north then
-                     NewHead = {AdjoinAt H to west}
-                  [] east then
-                     NewHead = {AdjoinAt H to north}
-                  [] south then
-                     NewHead = {AdjoinAt H to east}
-                  [] west then
-                     NewHead = {AdjoinAt H to south}
-                  end
-               end
-               local NewShip in
-                  NewShip = {AdjoinAt Spaceship positions {Append NewHead|nil T}}
-                  {MoveForward NewShip}
-               end
-            end
-         end
-      end
-
-            
 
       
       % La fonction qui décode la stratégie d'un serpent en une liste de fonctions. Chacune correspond

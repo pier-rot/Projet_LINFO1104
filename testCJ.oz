@@ -1,6 +1,7 @@
 fun {DecodeStrategy Strategy}
     case Strategy of H|T then 
-        if H == forward  then {Next Spaceship forward}|{DecodeStrategy T}
+        if H == forward  then 
+            fun {$ Spaceship} {Next Spaceship forward} end|{DecodeStrategy T}
         elseif H == turn(left) then {Next Spaceship turn(left)}|{DecodeStrategy T}
         elseif H == turn(right) then {Next Spaceship turn(right)}|{DecodeStrategy T}
         elseif case H of repeat(Strategy times:X) then 
