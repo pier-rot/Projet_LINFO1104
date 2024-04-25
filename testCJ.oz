@@ -4,7 +4,7 @@ fun {DecodeStrategy Strategy}
         elseif H == turn(left) then {Next Spaceship turn(left)}|{DecodeStrategy T}
         elseif H == turn(right) then {Next Spaceship turn(right)}|{DecodeStrategy T}
         elseif case H of repeat(Strategy times:X) then 
-            {Repeat 1 H.times strategy_spaceship {DecodeStrategy strategy}}
+            {Repeat 1 H.times strategy_spaceship {DecodeStrategy Strategy}}
     [] nil then nil 
 
 end

@@ -3,7 +3,7 @@ local
    % Please replace this path with your own working directory that contains LethOzLib.ozf
 
    % Dossier = {Property.condGet cwdir '/home/max/FSAB1402/Projet-2017'} % Unix example
-   Dossier = {Property.condGet cwdir '/home/dev/oz/LINFO1104/PROJET_LINFO1104'}
+   Dossier = {Property.condGet cwdir '/home/pierre/dev/oz/PROJET_LINFO1104'}
    % Dossier = {Property.condGet cwdir 'C:\\Users\Thomas\Documents\UCL\Oz\Projet'} % Windows example.
    LethOzLib
 
@@ -112,7 +112,7 @@ in
 
       fun {EffectsAt P}
          %% TODO
-         {Browse P}
+         P
       end
 
       fun {TurnLeft Spaceship}
