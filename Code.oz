@@ -36,6 +36,8 @@ in
       FollowDirOf
       RotatePos
       TurnDir
+      Step
+      Times
    in
       % La fonction qui renvoit les nouveaux attributs du serpent après prise
       % en compte des effets qui l'affectent et de son instruction
@@ -66,20 +68,24 @@ in
          % Args : P ::= pos(x:X y:Y to:north|east|south|west)
          % Returns : Q ::= pos(x:X +- 1 y:Y +-1 to:P.to)
          % OK
+         {Step P 1}
+      end
+
+      fun {Step P S}
          local CurrDir NextX NextY in
             CurrDir = P.to
             case CurrDir of east then
-               NextX = P.x + 1
+               NextX = P.x + S
                NextY = P.y
             [] west then
-               NextX = P.x - 1
+               NextX = P.x - S
                NextY = P.y
             [] south then
                NextX = P.x
-               NextY = P.y + 1
+               NextY = P.y + S
             [] north then
                NextX = P.x
-               NextY = P.y - 1
+               NextY = P.y - S
             end
             %% TODO
             %% Check if new position is viable (i.e. out of bonds)
@@ -136,6 +142,14 @@ in
       % strategy ::= <instruction> '|' <strategy>
       %            | repeat(<strategy> times:<integer>) '|' <strategy>
       %            | nil
+      fun {Times Rec I Val}
+         if I == 0 then Rec
+         else
+            {Times {AdjoinAt Rec I Val} I-1 Val}
+         end
+      end
+
+      
       fun {DecodeStrategy Strategy}
          local DecodeStrategyAux in 
             fun {DecodeStrategyAux Strategy}
