@@ -62,13 +62,14 @@ in
       %               effects: [scrap|revert|wormhole(x:<P> y:<P>)|... ...]
       %            )
       fun {Next Spaceship Instruction}
-         NewSpaceship = case Instruction of forward then
-               {TurnDir Spaceship forward}
+         NewSpaceship = {UpdateShip Spaceship} 
+      in 
+         case Instruction of forward then
+               {TurnDir NewSpaceship forward}
             [] turn(Dir) then
-               {TurnDir Spaceship Dir}
+               {TurnDir NewSpaceship Dir}
             end
-         in
-            {UpdateShip NewSpaceship}
+            
       end
 
       fun {FollowDirOf P}
@@ -164,7 +165,20 @@ in
       end
 
       fun {ApplyRevert Spaceship}
-         {AdjoinAt Spaceship positions {Reverse Spaceship.positions}}
+         fun {OppositeDir P}
+            case P.to
+            of east then
+               {AdjoinAt P to west}
+            [] south then
+               {AdjoinAt P to north}
+            [] west then
+               {AdjoinAt P to east}
+            [] north then
+               {AdjoinAt P to south}
+            end
+         end
+      in
+         {AdjoinAt Spaceship positions {Map {Reverse Spaceship.positions} OppositeDir}}
       end
 
       fun {ApplyWormhole X Y Spaceship}
