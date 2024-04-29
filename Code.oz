@@ -102,7 +102,7 @@ in
          end
       end
 
-      fun {RotatePos P Dir} % Returns P rotated in the Dir direction
+      fun {RotatePos P Dir} % Returns P rotated in the Dir direction.
          case Dir of right then
             case P.to of east then
                {AdjoinAt P to south}
@@ -128,7 +128,7 @@ in
          end
       end
 
-      fun {TurnDir Spaceship Dir} % Moves Spaceship according to the direction Dir ::= forward|turn(left)|turn(right)
+      fun {TurnDir Spaceship Dir} % Moves Spaceship according to the direction Dir ::= forward|turn(left)|turn(right).
          local NewHead Front in 
             NewHead = {FollowDirOf {RotatePos Spaceship.positions.1 Dir}}
             Front = {List.take Spaceship.positions {Length Spaceship.positions}-1}
@@ -137,7 +137,7 @@ in
       end
 
       
-      fun {UpdateShip Spaceship} % Updates Spaceship with all the effects in Spaceship.effects, removing duplicate effects
+      fun {UpdateShip Spaceship} % Updates Spaceship with all the effects in Spaceship.effects, removing duplicate effects.
          case Spaceship.effects
          of nil then Spaceship
          [] Effect|Rest then
@@ -145,7 +145,7 @@ in
          end
       end
 
-      fun {ApplyEffect Effect Spaceship} % Applies Effect to Spaceship and returns the new Spaceship
+      fun {ApplyEffect Effect Spaceship} % Applies Effect to Spaceship and returns the new Spaceship.
          case Effect
          of scrap then
             {ApplyScrap Spaceship}
@@ -158,11 +158,11 @@ in
          end
       end
 
-      fun {ApplyScrap Spaceship} % Returns Spaceship with an additional block at the end
+      fun {ApplyScrap Spaceship} % Returns Spaceship with an additional block at the end.
          {AdjoinAt Spaceship positions {Append Spaceship.positions [{Step {List.last Spaceship.positions} ~1}]}}
       end
 
-      fun {ApplyRevert Spaceship} % Returns Spaceship reverted
+      fun {ApplyRevert Spaceship} % Returns Spaceship reverted.
          fun {OppositeDir P}
             case P.to
             of east then
@@ -179,11 +179,11 @@ in
          {AdjoinAt Spaceship positions {Map {Reverse Spaceship.positions} OppositeDir}}
       end
 
-      fun {ApplyWormhole X Y Spaceship} % Transports the Spaceship through wormhole at (X,Y)
+      fun {ApplyWormhole X Y Spaceship} % Transports the Spaceship through wormhole at (X,Y).
             {AdjoinAt Spaceship positions pos(x:X y:Y to:Spaceship.positions.1.to)|Spaceship.positions.2}
       end
 
-      fun {RemoveAllFrom L X} % Remove all elements I of L such that I==X
+      fun {RemoveAllFrom L X} % Remove all elements I of L such that I==X.
          if {Member X L} then
             {RemoveAllFrom {List.subtract L X} X}
          else
