@@ -137,11 +137,19 @@ in
       %            | repeat(<strategy> times:<integer>) '|' <strategy>
       %            | nil
       fun {DecodeStrategy Strategy}
-         [
-            fun{$ Spaceship}
-               Spaceship
+         local DecodeStrategyAux in 
+            fun {DecodeStrategyAux Strategy}
+               case Strategy of repeat(I times:T)|S then
+                  {Record.toList {Times '|'() T {DecodeStrategyAux I}}}|{DecodeStrategyAux S}
+               [] nil then nil
+               [] I|S then
+                  fun {$ Spaceship} {Next Spaceship I} end|{DecodeStrategyAux S}
+               [] I then
+                  fun {$ Spaceship} {Next Spaceship I} end
+               end
             end
-         ]
+            {List.flatten {DecodeStrategyAux Strategy}}
+         end
       end
 
       % Options
