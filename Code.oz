@@ -38,6 +38,12 @@ in
       TurnDir
       Step
       Times
+      UpdateShip
+      ApplyEffect
+      ApplyRevert
+      ApplyScrap
+      ApplyWormhole
+      RemoveAllFrom
    in
       % La fonction qui renvoit les nouveaux attributs du serpent après prise
       % en compte des effets qui l'affectent et de son instruction
@@ -56,11 +62,13 @@ in
       %               effects: [scrap|revert|wormhole(x:<P> y:<P>)|... ...]
       %            )
       fun {Next Spaceship Instruction}
-         case Instruction of forward then
-            {TurnDir Spaceship forward}
-         [] turn(Dir) then
-            {TurnDir Spaceship Dir}
-         end
+         NewSpaceship = case Instruction of forward then
+               {TurnDir Spaceship forward}
+            [] turn(Dir) then
+               {TurnDir Spaceship Dir}
+            end
+         in
+            {UpdateShip NewSpaceship}
       end
 
       fun {FollowDirOf P}
@@ -129,7 +137,47 @@ in
          end
       end
 
-            
+      
+      fun {UpdateShip Spaceship}
+         case Spaceship.effects
+         of nil then Spaceship
+         [] Effect|Rest then
+            {UpdateShip{AdjoinAt {ApplyEffect Effect Spaceship} effects {RemoveAllFrom Rest Effect}}}
+         end
+      end
+
+      fun {ApplyEffect Effect Spaceship}
+         case Effect
+         of scrap then
+            {ApplyScrap Spaceship}
+         [] revert then
+            {ApplyRevert Spaceship}
+         [] wormhole(x:X y:Y) then
+            {ApplyWormhole X Y Spaceship}
+         [] nil then
+            Spaceship
+         end
+      end
+
+      fun {ApplyScrap Spaceship}
+         {AdjoinAt Spaceship positions {Append Spaceship.positions [{Step {List.last Spaceship.positions} ~1}]}}
+      end
+
+      fun {ApplyRevert Spaceship}
+         {AdjoinAt Spaceship positions {Reverse Spaceship.positions}}
+      end
+
+      fun {ApplyWormhole X Y Spaceship}
+         Spaceship
+      end
+
+      fun {RemoveAllFrom L X}
+         if {Member X L} then
+            {RemoveAllFrom {List.subtract L X} X}
+         else
+            L 
+        end
+      end
 
       
       % La fonction qui décode la stratégie d'un serpent en une liste de fonctions. Chacune correspond
@@ -170,7 +218,7 @@ in
       Options = options(
 		   % Fichier contenant le scénario (depuis Dossier)
 		   % Path of the scenario (relative to Dossier)
-		   scenario:'scenario/scenario_test_moves.oz'
+		   scenario:'scenario/scenario_test_revert.oz'
 		   % Utilisez cette touche pour quitter la fenêtre
 		   % Use this key to leave the graphical mode
 		   closeKey:'Escape'
