@@ -61,7 +61,7 @@ in
       %               ]
       %               effects: [scrap|revert|wormhole(x:<P> y:<P>)|... ...]
       %            )
-      fun {Next Spaceship Instruction}
+      fun {Next Spaceship Instruction} % Returns the updated Spaceship according to the given Instruction as well as its current effects.
          NewSpaceship = {UpdateShip Spaceship} 
       in 
          case Instruction of forward then
@@ -72,7 +72,7 @@ in
             
       end
 
-      fun {FollowDirOf P}
+      fun {FollowDirOf P} % Returns a new pos(x:<P> y:<P> to:east|south|west|north) with a x or y incremented/decremented by 1 depending on it's to feature.
          % Returns the next position in P's direction
          % Args : P ::= pos(x:X y:Y to:north|east|south|west)
          % Returns : Q ::= pos(x:X +- 1 y:Y +-1 to:P.to)
@@ -80,7 +80,7 @@ in
          {Step P 1}
       end
 
-      fun {Step P S}
+      fun {Step P S} % Returns a new pos(x:<P> y:<P> to:east|south|west|north) with a x or y incremented/decremented by S depending on it's to feature.
          local CurrDir NextX NextY in
             CurrDir = P.to
             case CurrDir of east then
@@ -102,8 +102,7 @@ in
          end
       end
 
-      fun {RotatePos P Dir}
-         % Rotates P in the given direction Dir
+      fun {RotatePos P Dir} % Returns P rotated in the Dir direction
          case Dir of right then
             case P.to of east then
                {AdjoinAt P to south}
@@ -129,8 +128,7 @@ in
          end
       end
 
-      fun {TurnDir Spaceship Dir}
-         % Moves Spaceship according to the direction Dir ::= forward|turn(left)|turn(right)
+      fun {TurnDir Spaceship Dir} % Moves Spaceship according to the direction Dir ::= forward|turn(left)|turn(right)
          local NewHead Front in 
             NewHead = {FollowDirOf {RotatePos Spaceship.positions.1 Dir}}
             Front = {List.take Spaceship.positions {Length Spaceship.positions}-1}
@@ -139,7 +137,7 @@ in
       end
 
       
-      fun {UpdateShip Spaceship}
+      fun {UpdateShip Spaceship} % Updates Spaceship with all the effects in Spaceship.effects, removing duplicate effects
          case Spaceship.effects
          of nil then Spaceship
          [] Effect|Rest then
@@ -147,7 +145,7 @@ in
          end
       end
 
-      fun {ApplyEffect Effect Spaceship}
+      fun {ApplyEffect Effect Spaceship} % Applies Effect to Spaceship and returns the new Spaceship
          case Effect
          of scrap then
             {ApplyScrap Spaceship}
@@ -160,11 +158,11 @@ in
          end
       end
 
-      fun {ApplyScrap Spaceship}
+      fun {ApplyScrap Spaceship} % Returns Spaceship with an additional block at the end
          {AdjoinAt Spaceship positions {Append Spaceship.positions [{Step {List.last Spaceship.positions} ~1}]}}
       end
 
-      fun {ApplyRevert Spaceship}
+      fun {ApplyRevert Spaceship} % Returns Spaceship reverted
          fun {OppositeDir P}
             case P.to
             of east then
@@ -185,7 +183,7 @@ in
          Spaceship
       end
 
-      fun {RemoveAllFrom L X}
+      fun {RemoveAllFrom L X} % Remove all elements I of L such that I==X
          if {Member X L} then
             {RemoveAllFrom {List.subtract L X} X}
          else
@@ -211,7 +209,6 @@ in
          end
       end
 
-      
       fun {DecodeStrategy Strategy}
          local DecodeStrategyAux in 
             fun {DecodeStrategyAux Strategy}
