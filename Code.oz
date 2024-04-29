@@ -179,8 +179,8 @@ in
          {AdjoinAt Spaceship positions {Map {Reverse Spaceship.positions} OppositeDir}}
       end
 
-      fun {ApplyWormhole X Y Spaceship}
-         Spaceship
+      fun {ApplyWormhole X Y Spaceship} % Transports the Spaceship through wormhole at (X,Y)
+            {AdjoinAt Spaceship positions pos(x:X y:Y to:Spaceship.positions.1.to)|Spaceship.positions.2}
       end
 
       fun {RemoveAllFrom L X} % Remove all elements I of L such that I==X
@@ -229,7 +229,7 @@ in
       Options = options(
 		   % Fichier contenant le scénario (depuis Dossier)
 		   % Path of the scenario (relative to Dossier)
-		   scenario:'scenario/scenario_test_revert.oz'
+		   scenario:'scenario/scenario_crazy.oz'
 		   % Utilisez cette touche pour quitter la fenêtre
 		   % Use this key to leave the graphical mode
 		   closeKey:'Escape'
