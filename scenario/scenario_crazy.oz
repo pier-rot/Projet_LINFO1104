@@ -14,7 +14,7 @@ in
 		   spaceship(team:green name:steve
 			 positions: [pos(x:19 y:20 to:west) pos(x:20 y:20 to:west) pos(x:21 y:20 to:west)]
 			 effects: nil
-			 strategy:  nil % keyboard(left:q right:d intro:nil)
+			 strategy: keyboard(left:q right:d intro:nil)
 			 seismicCharge: NoBomb
 			)
 		  ]
