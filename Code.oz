@@ -69,6 +69,8 @@ in
                {TurnDir NewSpaceship forward}
             [] turn(Dir) then
                {TurnDir NewSpaceship Dir}
+            [] stop then
+               Spaceship
             end
             
       end
@@ -134,8 +136,7 @@ in
             {AdjoinAt Spaceship positions NewHead|Front}
          end
       end
-
-      
+  
       fun {UpdateShip Spaceship} % Updates Spaceship with all the effects in Spaceship.effects, removing duplicate effects.
          case Spaceship.effects
          of nil then Spaceship
@@ -184,7 +185,7 @@ in
             {AdjoinAt Spaceship positions pos(x:X y:Y to:Spaceship.positions.1.to)|Spaceship.positions.2}
       end
 
-      fun {ApplySeismicCharge L Spaceship}
+      fun {ApplySeismicCharge L Spaceship} % Gives seismic charges L to Spaceship.
          local ReturnBomb NoBomb in
             NoBomb = false|NoBomb
             fun {ReturnBomb L}
@@ -240,11 +241,15 @@ in
          end
       end
 
+
+
+      % Extensions
+
       % Options
       Options = options(
 		   % Fichier contenant le scénario (depuis Dossier)
 		   % Path of the scenario (relative to Dossier)
-		   scenario:'scenario/scenario_crazy.oz'
+		   scenario:'scenario/scenario_test_moves.oz'
 		   % Utilisez cette touche pour quitter la fenêtre
 		   % Use this key to leave the graphical mode
 		   closeKey:'Escape'
@@ -253,7 +258,7 @@ in
 		   debug: true
 		   % Instants par seconde, 0 spécifie une exécution pas à pas. (appuyer sur 'Espace' fait avancer le jeu d'un pas)
 		   % Steps per second, 0 for step by step. (press 'Space' to go one step further)
-		   frameRate: 0
+		   frameRate: 5
 		)
    end
 
