@@ -153,6 +153,8 @@ in
             {ApplyRevert Spaceship}
          [] wormhole(x:X y:Y) then
             {ApplyWormhole X Y Spaceship}
+         [] dropSeismicCharge then
+            {ApplySeismicCharge Spaceship}
          [] nil then
             Spaceship
          end
@@ -181,6 +183,10 @@ in
 
       fun {ApplyWormhole X Y Spaceship} % Transports the Spaceship through wormhole at (X,Y).
             {AdjoinAt Spaceship positions pos(x:X y:Y to:Spaceship.positions.1.to)|Spaceship.positions.2}
+      end
+
+      fun {ApplySeismicCharge Spaceship}
+         {AdjoinAt Spaceship seismicCharge true|Spaceship.seismicCharge}
       end
 
       fun {RemoveAllFrom L X} % Remove all elements I of L such that I==X.
