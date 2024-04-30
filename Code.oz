@@ -43,6 +43,7 @@ in
       ApplyRevert
       ApplyScrap
       ApplyWormhole
+      ApplySeismicCharge
       RemoveAllFrom
    in
       % La fonction qui renvoit les nouveaux attributs du serpent après prise
@@ -96,8 +97,6 @@ in
                NextX = P.x
                NextY = P.y - S
             end
-            %% TODO
-            %% Check if new position is viable (i.e. out of bonds)
             {AdjoinAt {AdjoinAt P x NextX} y NextY}
          end
       end
@@ -153,8 +152,8 @@ in
             {ApplyRevert Spaceship}
          [] wormhole(x:X y:Y) then
             {ApplyWormhole X Y Spaceship}
-         [] dropSeismicCharge then
-            {ApplySeismicCharge Spaceship}
+         [] dropSeismicCharge(L) then
+            {ApplySeismicCharge L Spaceship}
          [] nil then
             Spaceship
          end
@@ -185,8 +184,18 @@ in
             {AdjoinAt Spaceship positions pos(x:X y:Y to:Spaceship.positions.1.to)|Spaceship.positions.2}
       end
 
-      fun {ApplySeismicCharge Spaceship}
-         {AdjoinAt Spaceship seismicCharge true|Spaceship.seismicCharge}
+      fun {ApplySeismicCharge L Spaceship}
+         local ReturnBomb NoBomb in
+            NoBomb = false|NoBomb
+            fun {ReturnBomb L}
+               case L of H|T then
+                  H|{ReturnBomb T}
+               [] nil then
+                  NoBomb
+               end
+            end
+            {AdjoinAt Spaceship seismicCharge {ReturnBomb L}}
+         end
       end
 
       fun {RemoveAllFrom L X} % Remove all elements I of L such that I==X.
