@@ -76,7 +76,7 @@ in
             {TurnDir NewSpaceship forward}
          [] turn(Dir) then
             {TurnDir NewSpaceship Dir}
-         [] stop then
+         [] still then
             NewSpaceship
          end
             
@@ -162,12 +162,10 @@ in
             {ApplyWormhole X Y Spaceship}
          [] dropSeismicCharge(L) then
             {ApplySeismicCharge L Spaceship}
-         [] malware(n:N) then
-            {ApplyMalware N Spaceship}
-         [] emb(n:N) then
-            {ApplyEMB N Spaceship}
          [] shrink(n:N) then 
             {ApplyShrink N Spaceship}
+         [] emb(n:N) then
+            {ApplyEMB N Spaceship}
          [] nil then
             Spaceship
          end
@@ -257,14 +255,6 @@ in
 
 
       % Extensions
-      fun {ApplyEMB N Spaceship}
-         case Spaceship.strategy of keyboard(left:L right:R intro:nil) then
-            {AdjoinAt Spaceship strategy {Append {NList N stop} [keyboard(left:L right:R intro:nil)]}}
-         [] H|T then
-            {AdjoinAt Spaceship strategy {Append {NList N stop} Spaceship.strategy}}
-         end
-      end
-     
       fun {NList N Object}
          fun {NList N Object L}
              if N == 0 then
@@ -277,16 +267,9 @@ in
          {NList N Object nil}
       end
 
-      fun {ApplyMalware N Spaceship}
-         Spaceship
+      fun {ApplyEMB N Spaceship}
+         {AdjoinAt Spaceship strategy {Append {NList N still} Spaceship.strategy}}
       end
-
-      fun{Drop X N}
-         if N==0 then X else 
-            case X of H|T then {Drop T N-1}
-            [] nil then nil end 
-         end 
-      end 
  
       fun {ApplyShrink N Spaceship}
          {AdjoinAt Spaceship positions {List.take Spaceship.positions {Length Spaceship.positions}-N}}
