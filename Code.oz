@@ -68,12 +68,14 @@ in
       fun {Next Spaceship Instruction} % Returns the updated Spaceship according to the given Instruction as well as its current effects.
          NewSpaceship = {UpdateShip Spaceship} 
       in 
-         case Instruction 
-         of forward then
-            {TurnDir NewSpaceship forward}
-         [] turn(Dir) then
-            {TurnDir NewSpaceship Dir}
-         [] still then
+         if NewSpaceship.sleep == 0 then
+            case Instruction 
+            of forward then
+               {TurnDir NewSpaceship forward}
+            [] turn(Dir) then
+               {TurnDir NewSpaceship Dir}
+            end
+         else
             NewSpaceship
          end
             
@@ -259,8 +261,12 @@ in
       end
 
       fun {ApplyEMB N Spaceship}
-         {AdjoinAt Spaceship strategy {Append {NList N still} Spaceship.strategy}}
-      end
+         if Spaceship.sleep == 0 then
+            {AdjoinAt Spaceship sleep Spaceship.sleep+N}
+         else
+            {AdjoinAt Spaceship sleep Spaceship.sleep-1}
+         end
+     end
  
       fun {ApplyShrink N Spaceship}
          {AdjoinAt Spaceship positions {List.take Spaceship.positions {Length Spaceship.positions}-N}}

@@ -10,6 +10,7 @@ in
 			   effects: nil
 			   strategy: [forward forward repeat([forward] times:30) turn(left) forward  forward turn(left) forward turn(left) repeat([forward] times:6) turn(left) forward turn(left) repeat([forward] times:6) turn(left) forward turn(left) repeat([forward] times:10)]
 			   seismicCharge: NoBomb
+			   sleep: 0
 			  )
 
 			  spaceship(team:green name:oui
@@ -17,6 +18,7 @@ in
 			   effects: nil
 			   strategy: [forward forward repeat([forward] times:17) turn(left) repeat([forward] times:19) turn(left) repeat([forward] times:19) turn(left) repeat([forward] times:19)turn(left) repeat([forward] times:19) turn(left) repeat([forward] times:19) turn(left) repeat([forward] times:17)]
 			   seismicCharge: NoBomb
+			   sleep: 0
 			  )
 		    ]
 	    bonuses: [
