@@ -23,6 +23,7 @@ in
 		    bonus(position:pos(x:13 y:12) color:orange effect:wormhole(x:8 y:13) target:catcher)
 		    bonus(position:pos(x:8 y:13)  color:orange effect:wormhole(x:13 y:12) target:catcher)
 			bonus(position:pos(x:4 y:12) color:red effect:revert target:catcher)
+			bonus(position:pos(x:15 y:13) color:blue effect:emb(n:3) target:catcher)
 			bonus(position:pos(x:18 y:13) color:purple effect:shrink(n:4) target:catcher)
 			bonus(position:pos(x:3 y:23) color:yellow effect:scrap target:catcher)
 			bonus(position:pos(x:23 y:23) color:yellow effect:scrap target:catcher)

@@ -71,12 +71,13 @@ in
       fun {Next Spaceship Instruction} % Returns the updated Spaceship according to the given Instruction as well as its current effects.
          NewSpaceship = {UpdateShip Spaceship} 
       in 
-         case Instruction of forward then
+         case Instruction 
+         of forward then
             {TurnDir NewSpaceship forward}
          [] turn(Dir) then
             {TurnDir NewSpaceship Dir}
          [] stop then
-            Spaceship
+            NewSpaceship
          end
             
       end
@@ -166,7 +167,7 @@ in
          [] emb(n:N) then
             {ApplyEMB N Spaceship}
          [] shrink(n:N) then 
-            {ApplyShrink Spaceship N}
+            {ApplyShrink N Spaceship}
          [] nil then
             Spaceship
          end
@@ -258,9 +259,9 @@ in
       % Extensions
       fun {ApplyEMB N Spaceship}
          case Spaceship.strategy of keyboard(left:L right:R intro:nil) then
-             {AdjoinAt Spaceship strategy {Append {NList N stop} [Spaceship.strategy]}}
+            {AdjoinAt Spaceship strategy {Append {NList N stop} [keyboard(left:L right:R intro:nil)]}}
          [] H|T then
-             {AdjoinAt Spaceship strategy {Append {NList N stop} Spaceship.strategy}}
+            {AdjoinAt Spaceship strategy {Append {NList N stop} Spaceship.strategy}}
          end
       end
      
@@ -287,7 +288,7 @@ in
          end 
       end 
  
-      fun {ApplyShrink Spaceship N}
+      fun {ApplyShrink N Spaceship}
          {AdjoinAt Spaceship positions {List.take Spaceship.positions {Length Spaceship.positions}-N}}
       end
 
@@ -304,7 +305,7 @@ in
 		   debug: true
 		   % Instants par seconde, 0 spécifie une exécution pas à pas. (appuyer sur 'Espace' fait avancer le jeu d'un pas)
 		   % Steps per second, 0 for step by step. (press 'Space' to go one step further)
-		   frameRate: 3
+		   frameRate: 0
 		)
    end
 
