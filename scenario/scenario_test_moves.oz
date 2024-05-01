@@ -1,7 +1,8 @@
 local
    NoBomb=false|NoBomb
 in
-   scenario(bombLatency:3
+   scenario(
+		bombLatency:3
 	    walls:true
 	    step: 0
 	    spaceships: [
@@ -36,7 +37,7 @@ in
 			   seismicCharge: NoBomb
 			  )
 		    ]
-	    bonuses: nil
+	    bonuses: [bonus(position:pos(x:7 y:7) color:blue effect:emb(n:3) target:catcher)]
 	    bombs: nil
 	   )
 end

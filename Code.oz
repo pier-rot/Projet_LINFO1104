@@ -4,6 +4,7 @@ local
 
    % Dossier = {Property.condGet cwdir '/home/max/FSAB1402/Projet-2017'} % Unix example
    Dossier = {Property.condGet cwdir '/home/pierre/dev/oz/Projet_LINFO1104'}
+   %Dossier = {Property.condGet cwdir "C:/Users/cyril/OneDrive/Documents/cours/Q2/INFO/Project"}
    % Dossier = {Property.condGet cwdir 'C:\\Users\Thomas\Documents\UCL\Oz\Projet'} % Windows example.
    LethOzLib
 
@@ -37,14 +38,19 @@ in
       RotatePos
       TurnDir
       Step
+      RemoveAllFrom
       Times
+      NList
       UpdateShip
       ApplyEffect
       ApplyRevert
       ApplyScrap
       ApplyWormhole
       ApplySeismicCharge
-      RemoveAllFrom
+      ApplyMalware
+      ApplyEMB
+      Drop
+      ApplyShrink
    in
       % La fonction qui renvoit les nouveaux attributs du serpent après prise
       % en compte des effets qui l'affectent et de son instruction
@@ -66,12 +72,12 @@ in
          NewSpaceship = {UpdateShip Spaceship} 
       in 
          case Instruction of forward then
-               {TurnDir NewSpaceship forward}
-            [] turn(Dir) then
-               {TurnDir NewSpaceship Dir}
-            [] stop then
-               Spaceship
-            end
+            {TurnDir NewSpaceship forward}
+         [] turn(Dir) then
+            {TurnDir NewSpaceship Dir}
+         [] stop then
+            Spaceship
+         end
             
       end
 
@@ -155,6 +161,12 @@ in
             {ApplyWormhole X Y Spaceship}
          [] dropSeismicCharge(L) then
             {ApplySeismicCharge L Spaceship}
+         [] malware(n:N) then
+            {ApplyMalware N Spaceship}
+         [] emb(n:N) then
+            {ApplyEMB N Spaceship}
+         [] shrink(n:N) then 
+            {ApplyShrink Spaceship N}
          [] nil then
             Spaceship
          end
@@ -244,12 +256,46 @@ in
 
 
       % Extensions
+      fun {ApplyEMB N Spaceship}
+         case Spaceship.strategy of keyboard(left:L right:R intro:nil) then
+             {AdjoinAt Spaceship strategy {Append {NList N stop} [Spaceship.strategy]}}
+         [] H|T then
+             {AdjoinAt Spaceship strategy {Append {NList N stop} Spaceship.strategy}}
+         end
+      end
+     
+      fun {NList N Object}
+         fun {NList N Object L}
+             if N == 0 then
+                 L
+             else
+                 {NList N-1 Object Object|L}
+             end
+         end
+      in
+         {NList N Object nil}
+      end
+
+      fun {ApplyMalware N Spaceship}
+         Spaceship
+      end
+
+      fun{Drop X N}
+         if N==0 then X else 
+            case X of H|T then {Drop T N-1}
+            [] nil then nil end 
+         end 
+      end 
+ 
+      fun {ApplyShrink Spaceship N}
+         {AdjoinAt Spaceship positions {List.take Spaceship.positions {Length Spaceship.positions}-N}}
+      end
 
       % Options
       Options = options(
 		   % Fichier contenant le scénario (depuis Dossier)
 		   % Path of the scenario (relative to Dossier)
-		   scenario:'scenario/scenario_test_moves.oz'
+		   scenario:'scenario/scenario_test.oz'
 		   % Utilisez cette touche pour quitter la fenêtre
 		   % Use this key to leave the graphical mode
 		   closeKey:'Escape'
@@ -258,7 +304,7 @@ in
 		   debug: true
 		   % Instants par seconde, 0 spécifie une exécution pas à pas. (appuyer sur 'Espace' fait avancer le jeu d'un pas)
 		   % Steps per second, 0 for step by step. (press 'Space' to go one step further)
-		   frameRate: 5
+		   frameRate: 3
 		)
    end
 
