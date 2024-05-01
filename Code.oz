@@ -266,7 +266,7 @@ in
          else
             {AdjoinAt Spaceship sleep Spaceship.sleep-1}
          end
-     end
+      end
  
       fun {ApplyShrink N Spaceship}
          {AdjoinAt Spaceship positions {List.take Spaceship.positions {Length Spaceship.positions}-N}}
