@@ -197,7 +197,7 @@ fun {CheckForKills Config}
          X=Spaceship.positions.1.x Y=Spaceship.positions.1.y
       in
          if {IsDead Spaceship} then
-            Spaceship
+            {AdjoinAt Spaceship team black}
          else
             if ({Obstacles X Y} \= Spaceship.team|nil orelse {AnyBoomedSquare Spaceship.positions}
                orelse {List.length Spaceship.positions} < 2) andthen {Member invincibility Spaceship.effects} == false then
