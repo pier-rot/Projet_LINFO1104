@@ -39,7 +39,6 @@ in
       TurnDir
       Step
       RemoveAllFrom
-      Times
       NList
       UpdateShip
       ApplyEffect
@@ -47,9 +46,7 @@ in
       ApplyScrap
       ApplyWormhole
       ApplySeismicCharge
-      ApplyMalware
       ApplyEMB
-      Drop
       ApplyShrink
    in
       % La fonction qui renvoit les nouveaux attributs du serpent après prise
@@ -229,18 +226,12 @@ in
       % strategy ::= <instruction> '|' <strategy>
       %            | repeat(<strategy> times:<integer>) '|' <strategy>
       %            | nil
-      fun {Times Rec I Val}
-         if I == 0 then Rec
-         else
-            {Times {AdjoinAt Rec I Val} I-1 Val}
-         end
-      end
 
       fun {DecodeStrategy Strategy}
          local DecodeStrategyAux in 
             fun {DecodeStrategyAux Strategy}
                case Strategy of repeat(I times:T)|S then
-                  {Record.toList {Times '|'() T {DecodeStrategyAux I}}}|{DecodeStrategyAux S}
+                  {NList T {DecodeStrategyAux I}}|{DecodeStrategyAux S}
                [] nil then nil
                [] I|S then
                   fun {$ Spaceship} {Next Spaceship I} end|{DecodeStrategyAux S}
